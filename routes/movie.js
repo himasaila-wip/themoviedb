@@ -5,15 +5,11 @@ var request = require('request');
 var axios = require('axios');
 var https = require('https');
 var cb = require('../cb');
-// const agent = new https.Agent({
-//     rejectUnauthorized: false,
-// });
 
-//getting whole api response
+//getting all movie data
 router.get('/', cb, function (req, res, next) {
     service.wholeResponse(req, res)
 });
-
 //filter by popularity
 router.get('/popularity', cb, function (req, res, next) {
     service.popularity(req, res)
@@ -25,7 +21,7 @@ router.get('/date', cb, function (req, res, next) {
 });
 
 //filter by  genres(using axios.all)
-router.get('/gen', cb, function (req, res, next) {
+router.get('/genre', cb, function (req, res, next) {
     service.genres(req, res);
 });
 

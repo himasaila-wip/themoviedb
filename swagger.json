@@ -1,0 +1,122 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "THE MOVIE DATABASE",
+        "description": "Get your movie list here",
+        "contact": {
+            "name": "Admin",
+            "email": "hima@xyz.com"
+        },
+        "version": "2.0.0"
+    },
+    "tags": [{
+        "name": "Movie API Methods",
+        "description": "consumed from TMDB API"
+    }],
+    "paths": {
+        "/movie/": {
+            "get": {
+                "summary": "Get the list of movies ",
+                "description": "click on TRY IT OUT to get list of movies ",
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    }
+                }
+            }
+        },
+        "/movie/popularity": {
+            "get": {
+                "parameters": [{
+                    "name": "popularity",
+                    "in": "header",
+                    "required": "true"
+                }],
+                "summary": "Get list of movies with specifed popularity",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/movie/genre": {
+            "get": {
+                "parameters": [{
+                    "name": "gen",
+                    "in": "header",
+                    "required": "true"
+                }],
+                "summary": "Get list of movies with specified genre",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/movie/date": {
+            "get": {
+                "parameters": [{
+                    "name": "datenum",
+                    "in": "header",
+                    "required": "true"
+                }],
+                "summary": "Get list of movies with specified date",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/movie/filter": {
+            "get": {
+                "parameters": [{
+                        "name": "popularity",
+                        "in": "header"
+                    },
+                    {
+                        "name": "datenum",
+                        "in": "header"
+                    },
+                    {
+                        "name": "gen",
+                        "in": "header"
+                    }
+                ],
+                "summary": "Get list of movies with specified values",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        }
+    },
+
+
+    "components": {
+        "schemas": {
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ApiResponse": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

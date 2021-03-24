@@ -3,13 +3,13 @@ var https = require('https');
 const agent = new https.Agent({
     rejectUnauthorized: false,
 });
-var api1 = 'https://api.themoviedb.org/3/movie/now_playing?api_key=6cd2db309be6e583793681e5e9572245&language=en-US&page=';
+var api1 = 'https://api.themoviedb.org/3/movie/now_playing?api_key=6cd2db309be6e583793681e5e9572245&language=en-US&page=1';
 var api2 = 'https://api.themoviedb.org/3/genre/movie/list?api_key=6cd2db309be6e583793681e5e9572245&language=en-US';
 
 
 function wholeResponse(req, res) {
     let id = req.headers.id;
-    axios.get(api1 + id, {
+    axios.get(api1, {
             httpsAgent: agent
         })
         .then((response) => {
@@ -22,9 +22,8 @@ function wholeResponse(req, res) {
 }
 
 function popularity(req, res) {
-    let id = req.headers.id;
     let popularity = req.headers.popularity;
-    axios.get(api1 + id, {
+    axios.get(api1, {
             httpsAgent: agent
         })
         .then((response) => {
@@ -36,13 +35,14 @@ function popularity(req, res) {
 };
 
 function date(req, res) {
-    let startdate = new Date(req.headers.date);
+    let startdate = req.headers.datenum;
+    let datenum = new Date(startdate);
     let id = req.headers.id;
-    axios.get(api1 + id, {
+    axios.get(api1, {
             httpsAgent: agent
         })
         .then((response) => {
-            res.json(response.data.results.filter(item => new Date(item.release_date) >= startdate))
+            res.json(response.data.results.filter(item => new Date(item.release_date) >= datenum))
         })
         .catch((error) => {
             console.error(error)
@@ -55,7 +55,7 @@ function genres(req, res) {
     var names = name.split(",");
     var arr = [];
     var display = [];
-    var reqOne = axios.get(api1 + id, {
+    var reqOne = axios.get(api1, {
         httpsAgent: agent
     })
     var reqTwo = axios.get(api2, {
@@ -98,11 +98,14 @@ function genres(req, res) {
 function filter(req, res) {
     let id = req.headers.id;
     let pop = req.headers.popularity;
-    let dt = req.headers.date;
+    let dt = req.headers.datenum;
+    let gene;
     let date = new Date(dt);
     let genres = req.headers.gen;
-    let gene = genres.split(",");
-    let reqOne = axios.get(api1 + id, {
+    if(genres !== undefined){
+        gene = genres.split(",");
+    }
+    let reqOne = axios.get(api1, {
         httpsAgent: agent
     })
     let reqTwo = axios.get(api2, {
@@ -114,11 +117,11 @@ function filter(req, res) {
             const resOne = responses[0]
             const resTwo = responses[1]
             //no input condition
-            if (pop === "" && dt === "" && genres === "") {
+            if (pop === undefined  && dt === undefined && genres === undefined) {
                 res.json(resOne.data.results)
             } else {
                 //genres existed condition
-                if (genres !== "") {
+                if (genres !== undefined) {
                     var arr = [];
                     var display = [];
                     var gen = resTwo.data.genres;
@@ -141,11 +144,11 @@ function filter(req, res) {
                             }
                         }
                     })
-                    if (pop !== "" && dt !== "") {
+                    if (pop !== undefined && dt !== undefined) {
                         res.json(display.filter(item => (item.popularity > pop) && (new Date(item.release_date) >= date)))
-                     } else if (pop !== "") {
+                     } else if (pop !== undefined) {
                         res.json(display.filter(item => (item.popularity > pop)))
-                    } else if (dt !== "") {
+                    } else if (dt !== undefined) {
                         res.json(display.filter(item => (new Date(item.release_date) >= date)))
                     }else {
                         res.json(display)
@@ -153,11 +156,11 @@ function filter(req, res) {
 
                 } else {
                     //no genres condition
-                    if (pop != "" && dt !== "") {
+                    if (pop != undefined && dt !== undefined) {
                         res.json(resOne.data.results.filter(item => (item.popularity > pop) && (new Date(item.release_date) >= date)))
-                    } else if (pop != "") {
+                    } else if (pop != undefined) {
                         res.json(resOne.data.results.filter(item => (item.popularity > pop)))
-                    } else if (dt !== "") {
+                    } else if (dt !== undefined) {
                         res.json(resOne.data.results.filter(item => (new Date(item.release_date) >= date)))
                     }
 
